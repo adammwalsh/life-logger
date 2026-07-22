@@ -524,9 +524,13 @@ function updateHistory(){
 // ============= SETTINGS =============
 
 function updateSettingsLife(amount){
-    state.startingLife = amount;
+
+    state.startingLife = Number(amount);
+
     saveState();
-    console.log("Starting life updated to:", amount);
+
+    alert(`Starting life set to ${amount}`);
+
 }
 
 // Register PWA Service Worker
