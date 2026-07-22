@@ -8,9 +8,6 @@
 
     <meta name="theme-color" content="#111111">
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,7 +16,6 @@
 
 <div id="app">
 
-    <!-- Sydney -->
     <section id="sydney" class="player top">
 
         <div id="sydney-name" class="player-name">
@@ -37,7 +33,7 @@
 
     </section>
 
-    <!-- Center Timer -->
+
     <section id="center">
 
         <div id="timer">
@@ -46,7 +42,7 @@
 
     </section>
 
-    <!-- Adam -->
+
     <section id="adam" class="player bottom">
 
         <div id="adam-name" class="player-name">
@@ -64,7 +60,36 @@
 
     </section>
 
+
 </div>
+
+
+<!-- Game Over Popup -->
+
+<div id="game-over" class="hidden">
+
+    <div class="modal">
+
+        <h1 id="winner-text">
+            Winner!
+        </h1>
+
+        <p id="final-time">
+            Time: 00:00
+        </p>
+
+        <button id="undo-button">
+            Undo
+        </button>
+
+        <button id="next-game-button">
+            Next Game
+        </button>
+
+    </div>
+
+</div>
+
 
 <script src="script.js"></script>
 
