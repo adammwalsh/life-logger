@@ -362,170 +362,35 @@ function loadState(){
 
 }
 // Navigation
-
 const pages = {
-
-game: document.getElementById("game-screen"),
-
-season: document.getElementById("season-screen")
-
+    game: document.getElementById("game-screen"),
+    season: document.getElementById("season-screen"),
+    history: document.getElementById("history-screen"),
+    settings: document.getElementById("settings-screen")
 };
 
-
-document.querySelectorAll("nav button")
-.forEach(button => {
-
-
-button.onclick = () => {
-
-
-let page = button.dataset.page;
-
-
-if(page === "game"){
-
-pages.game.style.display="flex";
-pages.season.style.display="none";
-
-}
-
-
-if(page === "season"){
-
-pages.game.style.display="none";
-pages.season.style.display="block";
-
-updateSeason();
-
-}
-
-
-};
-
-
-});
-
-
-
-function updateSeason(){
-
-
-document.getElementById("season-adam-name")
-.textContent =
-state.players.bottom.name;
-
-
-document.getElementById("season-sydney-name")
-.textContent =
-state.players.top.name;
-
-
-
-document.getElementById("adam-wins")
-.textContent =
-state.players.bottom.wins;
-
-
-document.getElementById("adam-losses")
-.textContent =
-state.players.bottom.losses;
-
-
-document.getElementById("sydney-wins")
-.textContent =
-state.players.top.wins;
-
-
-document.getElementById("sydney-losses")
-.textContent =
-state.players.top.losses;
-
-
-
-let adamGames =
-state.players.bottom.wins +
-state.players.bottom.losses;
-
-
-let sydneyGames =
-state.players.top.wins +
-state.players.top.losses;
-
-
-
-document.getElementById("adam-rate")
-.textContent =
-adamGames
-?
-Math.round(
-state.players.bottom.wins / adamGames * 100
-)
-+"%"
-:
-"0%";
-
-
-document.getElementById("sydney-rate")
-.textContent =
-sydneyGames
-?
-Math.round(
-state.players.top.wins / sydneyGames * 100
-)
-+"%"
-:
-"0%";
-
-
-}
-// History Navigation
-
-const historyScreen =
-document.getElementById("history-screen");
-
-
-document.querySelectorAll("nav button")
-.forEach(button => {
-
-
-button.onclick = () => {
-
-let page = button.dataset.page;
-
-
-pages.game.style.display = "none";
-pages.season.style.display = "none";
-historyScreen.style.display = "none";
-
-
-if(page === "game"){
-
-pages.game.style.display="flex";
-
-}
-
-
-if(page === "season"){
-
-pages.season.style.display="block";
-
-updateSeason();
-
-}
-
-
-if(page === "history"){
-
-historyScreen.style.display="block";
-
-updateHistory();
-
-}
-
-
-};
-
-
+document.querySelectorAll("nav button").forEach(button => {
+    button.onclick = () => {
+        let page = button.dataset.page;
+        
+        // Hide all pages first
+        Object.values(pages).forEach(p => p.style.display = "none");
+        
+        // Show selected page and update content
+        if(pages[page]) {
+            pages[page].style.display = "block";
+            
+            // Update dynamic content based on page
+            if(page === "season") updateSeason();
+            if(page === "history") updateHistory();
+        }
+        
+        // Visual feedback: highlight active button
+        document.querySelectorAll("nav button").forEach(b => 
+            b.classList.remove("active")
+        );
+        button.classList.add("active");
+    };
 });
 
 
