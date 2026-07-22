@@ -396,3 +396,18 @@ opacity:.8;
 margin:5px;
 
 }
+/* Settings Buttons */
+
+#settings-screen button {
+
+width:100%;
+
+height:55px;
+
+margin:8px 0;
+
+font-size:1.1rem;
+
+border-radius:15px;
+
+}
