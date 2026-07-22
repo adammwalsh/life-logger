@@ -478,3 +478,117 @@ state.players.top.wins / sydneyGames * 100
 
 
 }
+// History Navigation
+
+const historyScreen =
+document.getElementById("history-screen");
+
+
+document.querySelectorAll("nav button")
+.forEach(button => {
+
+
+button.onclick = () => {
+
+let page = button.dataset.page;
+
+
+pages.game.style.display = "none";
+pages.season.style.display = "none";
+historyScreen.style.display = "none";
+
+
+if(page === "game"){
+
+pages.game.style.display="flex";
+
+}
+
+
+if(page === "season"){
+
+pages.season.style.display="block";
+
+updateSeason();
+
+}
+
+
+if(page === "history"){
+
+historyScreen.style.display="block";
+
+updateHistory();
+
+}
+
+
+};
+
+
+});
+
+
+
+function updateHistory(){
+
+
+let list =
+document.getElementById("history-list");
+
+
+if(state.games.length === 0){
+
+list.innerHTML =
+"<p>No games played yet.</p>";
+
+return;
+
+}
+
+
+
+list.innerHTML = "";
+
+
+[...state.games]
+.reverse()
+.forEach(game => {
+
+
+let card =
+document.createElement("div");
+
+
+card.className =
+"history-card";
+
+
+card.innerHTML = `
+
+<h2>
+🏆 ${game.winner}
+</h2>
+
+<p>
+Defeated ${game.loser}
+</p>
+
+<p>
+⏱ ${formatTime(game.duration)}
+</p>
+
+<p>
+${game.date}
+</p>
+
+`;
+
+
+list.appendChild(card);
+
+
+});
+
+
+}
