@@ -480,22 +480,40 @@ function navigateTo(newPage) {
     }, 250);
 }
 
-function updateSeason(){
+function editSeason(player){
 
-    document.getElementById("season-adam-name").textContent = state.players.bottom.name;
-    document.getElementById("season-sydney-name").textContent = state.players.top.name;
+    const name = state.players[player].name;
 
-    document.getElementById("adam-wins").textContent = state.players.bottom.wins;
-    document.getElementById("adam-losses").textContent = state.players.bottom.losses;
-    document.getElementById("sydney-wins").textContent = state.players.top.wins;
-    document.getElementById("sydney-losses").textContent = state.players.top.losses;
+    const wins = prompt(
+        `Enter ${name}'s wins:`,
+        state.players[player].wins
+    );
 
-    let adamGames = state.players.bottom.wins + state.players.bottom.losses;
-    let sydneyGames = state.players.top.wins + state.players.top.losses;
+    if(wins === null) return;
 
-    document.getElementById("adam-rate").textContent = adamGames ? Math.round(state.players.bottom.wins / adamGames * 100) + "%" : "0%";
-    document.getElementById("sydney-rate").textContent = sydneyGames ? Math.round(state.players.top.wins / sydneyGames * 100) + "%" : "0%";
+
+    const losses = prompt(
+        `Enter ${name}'s losses:`,
+        state.players[player].losses
+    );
+
+    if(losses === null) return;
+
+
+    state.players[player].wins =
+        Math.max(0, Number(wins) || 0);
+
+
+    state.players[player].losses =
+        Math.max(0, Number(losses) || 0);
+
+
+    saveState();
+
+    updateSeason();
+
 }
+
 
 function updateHistory(){
 
