@@ -361,7 +361,9 @@ function loadState(){
     return structuredClone(DEFAULT_STATE);
 
 }
-// Navigation
+
+// ============= NAVIGATION =============
+
 const pages = {
     game: document.getElementById("game-screen"),
     season: document.getElementById("season-screen"),
@@ -369,31 +371,140 @@ const pages = {
     settings: document.getElementById("settings-screen")
 };
 
+const pageOrder = ['game', 'season', 'history', 'settings'];
+let currentPage = 'game';
+
+// Set up nav button listeners
 document.querySelectorAll("nav button").forEach(button => {
-    button.onclick = () => {
-        let page = button.dataset.page;
-        
-        // Hide all pages first
-        Object.values(pages).forEach(p => p.style.display = "none");
-        
-        // Show selected page and update content
-        if(pages[page]) {
-            pages[page].style.display = "block";
-            
-            // Update dynamic content based on page
-            if(page === "season") updateSeason();
-            if(page === "history") updateHistory();
-        }
-        
-        // Visual feedback: highlight active button
-        document.querySelectorAll("nav button").forEach(b => 
-            b.classList.remove("active")
-        );
-        button.classList.add("active");
+    button.onclick = (e) => {
+        e.preventDefault();
+        navigateTo(button.dataset.page);
     };
 });
 
+function navigateTo(newPage) {
+    if (newPage === currentPage) return; // Don't re-navigate
+    
+    const currentPageEl = pages[currentPage];
+    const newPageEl = pages[newPage];
+    
+    // Determine direction
+    const currentIndex = pageOrder.indexOf(currentPage);
+    const newIndex = pageOrder.indexOf(newPage);
+    const direction = newIndex > currentIndex ? 'right' : 'left';
+    
+    // Remove active class from all buttons
+    document.querySelectorAll("nav button").forEach(b => {
+        b.classList.remove("active");
+    });
+    
+    // Add active class to current button
+    document.querySelector(`nav button[data-page="${newPage}"]`).classList.add("active");
+    
+    // Animate out current page
+    if (currentPageEl) {
+        currentPageEl.classList.add(`slide-out-${direction}`);
+    }
+    
+    // Animate in new page
+    setTimeout(() => {
+        if (currentPageEl) {
+            currentPageEl.style.display = "none";
+            currentPageEl.classList.remove(`slide-out-${direction}`);
+        }
+        
+        if (newPageEl) {
+            // Update dynamic content based on page
+            if (newPage === "season") updateSeason();
+            if (newPage === "history") updateHistory();
+            
+            newPageEl.style.display = newPage === 'game' ? "flex" : "block";
+            newPageEl.classList.add(`slide-in-${direction}`);
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                newPageEl.classList.remove(`slide-in-${direction}`);
+            }, 350);
+        }
+        
+        currentPage = newPage;
+    }, 250);
+}
 
+// Initialize first page as active
+document.querySelector('nav button[data-page="game"]').classList.add("active");
+
+function updateSeason(){
+
+
+document.getElementById("season-adam-name")
+.textContent =
+state.players.bottom.name;
+
+
+document.getElementById("season-sydney-name")
+.textContent =
+state.players.top.name;
+
+
+
+document.getElementById("adam-wins")
+.textContent =
+state.players.bottom.wins;
+
+
+document.getElementById("adam-losses")
+.textContent =
+state.players.bottom.losses;
+
+
+document.getElementById("sydney-wins")
+.textContent =
+state.players.top.wins;
+
+
+document.getElementById("sydney-losses")
+.textContent =
+state.players.top.losses;
+
+
+
+let adamGames =
+state.players.bottom.wins +
+state.players.bottom.losses;
+
+
+let sydneyGames =
+state.players.top.wins +
+state.players.top.losses;
+
+
+
+document.getElementById("adam-rate")
+.textContent =
+adamGames
+?
+Math.round(
+state.players.bottom.wins / adamGames * 100
+)
++"%"
+:
+"0%";
+
+
+document.getElementById("sydney-rate")
+.textContent =
+sydneyGames
+?
+Math.round(
+state.players.top.wins / sydneyGames * 100
+)
++"%"
+:
+"0%";
+
+
+}
 
 function updateHistory(){
 
@@ -457,7 +568,8 @@ list.appendChild(card);
 
 
 }
-// SETTINGS
+
+// ============= SETTINGS =============
 
 
 const settingsScreen =
@@ -558,6 +670,7 @@ location.reload();
 }
 
 };
+
 // Register PWA Service Worker
 
 if ("serviceWorker" in navigator) {
