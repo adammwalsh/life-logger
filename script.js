@@ -325,7 +325,7 @@ function loadState(){
         loaded.players.bottom.wins ??= 0;
         loaded.players.bottom.losses ??= 0;
         loaded.games ??= [];
-        loaded.startingLife ??= 20;
+        loaded.startingLife = Number(loaded.startingLife) || 20;
 
 
         return loaded;
