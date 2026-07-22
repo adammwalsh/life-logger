@@ -328,32 +328,50 @@ function saveState(){
 
 
 
-function loadState(){
+function loadState() {
 
-    let saved =
-    localStorage.getItem("lifeLedger");
+    const saved = localStorage.getItem("lifeLedger");
 
+    if (!saved) {
+        return structuredClone(DEFAULT_STATE);
+    }
 
-    if(saved){
+    try {
 
-        let loaded = JSON.parse(saved);
+        const loaded = JSON.parse(saved);
 
+        loaded.players ??= structuredClone(DEFAULT_STATE.players);
 
-        // Upgrade old saves
+        loaded.players.top ??= structuredClone(DEFAULT_STATE.players.top);
+        loaded.players.bottom ??= structuredClone(DEFAULT_STATE.players.bottom);
+
         loaded.players.top.wins ??= 0;
         loaded.players.top.losses ??= 0;
+
         loaded.players.bottom.wins ??= 0;
         loaded.players.bottom.losses ??= 0;
+
         loaded.games ??= [];
-        loaded.startingLife = Number(loaded.startingLife) || 20;
         loaded.lifeHistory ??= [];
+        loaded.startingLife = Number(loaded.startingLife) || 20;
+
+        loaded.timer ??= {
+            running: false,
+            elapsed: 0,
+            startTime: null
+        };
 
         return loaded;
 
+    } catch (err) {
+
+        console.warn("Corrupted save detected. Resetting.");
+
+        localStorage.removeItem("lifeLedger");
+
+        return structuredClone(DEFAULT_STATE);
+
     }
-
-
-    return structuredClone(DEFAULT_STATE);
 
 }
 
