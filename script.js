@@ -2,11 +2,15 @@ const DEFAULT_STATE = {
     players: {
         top: {
             name: "Sydney",
-            life: 20
+            life: 20,
+            wins: 0,
+            losses: 0
         },
         bottom: {
             name: "Adam",
-            life: 20
+            life: 20,
+            wins: 0,
+            losses: 0
         }
     },
 
@@ -16,12 +20,11 @@ const DEFAULT_STATE = {
         startTime: null
     },
 
-    history: []
+    games: []
 };
 
 
 let state = loadState();
-
 let lastState = null;
 
 
@@ -38,13 +41,6 @@ const timer = document.getElementById("timer");
 const gameOver = document.getElementById("game-over");
 const winnerText = document.getElementById("winner-text");
 const finalTime = document.getElementById("final-time");
-
-
-// Render
-
-render();
-
-setInterval(updateTimer,1000);
 
 
 // Buttons
@@ -72,6 +68,11 @@ document.getElementById("undo-button")
 
 document.getElementById("next-game-button")
 .onclick = nextGame;
+
+
+render();
+
+setInterval(updateTimer,1000);
 
 
 
@@ -106,44 +107,79 @@ function changeLife(player, amount){
 function checkWinner(){
 
     let winner = null;
+    let loser = null;
 
 
     if(state.players.top.life <= 0){
 
-        winner = state.players.bottom.name;
+        winner = "bottom";
+        loser = "top";
 
     }
 
 
     if(state.players.bottom.life <= 0){
 
-        winner = state.players.top.name;
+        winner = "top";
+        loser = "bottom";
 
     }
 
 
     if(winner){
 
-        state.timer.elapsed =
-        Math.floor(
-            (Date.now()-state.timer.startTime)/1000
-        );
-
-
-        state.timer.running=false;
-
-
-        winnerText.textContent =
-        "🏆 " + winner + " Wins!";
-
-
-        finalTime.textContent =
-        "Time: " + formatTime(state.timer.elapsed);
-
-
-        gameOver.classList.remove("hidden");
+        finishGame(winner, loser);
 
     }
+
+}
+
+
+
+function finishGame(winner, loser){
+
+    state.timer.elapsed =
+    Math.floor(
+        (Date.now()-state.timer.startTime)/1000
+    );
+
+
+    state.timer.running = false;
+
+
+    state.players[winner].wins++;
+    state.players[loser].losses++;
+
+
+    state.games.push({
+
+        winner:
+        state.players[winner].name,
+
+        loser:
+        state.players[loser].name,
+
+        duration:
+        state.timer.elapsed,
+
+        date:
+        new Date().toLocaleDateString()
+
+    });
+
+
+    winnerText.textContent =
+    "🏆 " + state.players[winner].name + " Wins!";
+
+
+    finalTime.textContent =
+    "Time: " + formatTime(state.timer.elapsed);
+
+
+    gameOver.classList.remove("hidden");
+
+
+    saveState();
 
 }
 
@@ -154,14 +190,20 @@ function nextGame(){
     state.players.top.life = 20;
     state.players.bottom.life = 20;
 
+
     state.timer = {
+
         running:false,
+
         elapsed:0,
+
         startTime:null
+
     };
 
 
     gameOver.classList.add("hidden");
+
 
     saveState();
 
@@ -192,7 +234,7 @@ function undoGame(){
 
 function editName(player){
 
-    const name =
+    let name =
     prompt(
         "Player Name",
         state.players[player].name
@@ -201,7 +243,7 @@ function editName(player){
 
     if(name){
 
-        state.players[player].name=name;
+        state.players[player].name = name;
 
         saveState();
 
@@ -260,7 +302,7 @@ function formatTime(seconds){
     Math.floor(seconds/60);
 
     let secs =
-    seconds%60;
+    seconds % 60;
 
 
     return (
@@ -300,7 +342,18 @@ function loadState(){
 
     if(saved){
 
-        return JSON.parse(saved);
+        let loaded = JSON.parse(saved);
+
+
+        // Upgrade old saves
+        loaded.players.top.wins ??= 0;
+        loaded.players.top.losses ??= 0;
+        loaded.players.bottom.wins ??= 0;
+        loaded.players.bottom.losses ??= 0;
+        loaded.games ??= [];
+
+
+        return loaded;
 
     }
 
