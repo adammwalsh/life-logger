@@ -616,7 +616,19 @@ function updateSettingsLife(amount){
 
     state.startingLife = Number(amount);
 
+    state.players.top.life = state.startingLife;
+    state.players.bottom.life = state.startingLife;
+
+    state.timer = {
+        running: false,
+        elapsed: 0,
+        startTime: null
+    };
+
+    gameOver.classList.add("hidden");
+
     saveState();
+    render();
 
     alert(`Starting life set to ${amount}`);
 
