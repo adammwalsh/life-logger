@@ -1,6 +1,8 @@
 /* =========================
-   Life Ledger Styles
+   Life Ledger Styles - Magic The Gathering Theme
    ========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital@0;1&display=swap');
 
 * {
     margin: 0;
@@ -13,9 +15,9 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #111;
+    background: #0a0e27;
     color: white;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Crimson Text', serif;
     user-select: none;
     touch-action: manipulation;
 }
@@ -37,17 +39,40 @@ body {
     justify-content: center;
     align-items: center;
     gap: 18px;
+    position: relative;
 }
 
 
 .top {
     transform: rotate(180deg);
-    border-bottom: 2px solid #333;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(34, 139, 34, 0.05) 100%);
+    border-bottom: 3px solid #8B4513;
+}
+
+.top .life {
+    color: #FF6B35;
+    text-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+}
+
+.top .player-name {
+    color: #2a8a2a;
+    text-shadow: 0 0 10px rgba(42, 138, 42, 0.3);
 }
 
 
 .bottom {
-    border-top: 2px solid #333;
+    background: linear-gradient(135deg, rgba(25, 25, 112, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
+    border-top: 3px solid #191970;
+}
+
+.bottom .life {
+    color: #00d4ff;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.bottom .player-name {
+    color: #1e90ff;
+    text-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
 }
 
 
@@ -56,8 +81,9 @@ body {
 .player-name {
     font-size: 2rem;
     font-weight: 600;
-    opacity: .85;
-    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    opacity: .95;
+    letter-spacing: 2px;
 }
 
 
@@ -65,8 +91,10 @@ body {
 
 .life {
     font-size: 7rem;
-    font-weight: 800;
+    font-weight: 900;
     line-height: 1;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 3px;
 }
 
 
@@ -83,7 +111,7 @@ button {
     height: 80px;
     border-radius: 20px;
     border: none;
-    background: #252525;
+    background: #1a1a2e;
     color: white;
     font-size: 2.5rem;
     font-weight: bold;
@@ -105,9 +133,9 @@ button:active {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #1b1b1b;
-    border-top: 2px solid #333;
-    border-bottom: 2px solid #333;
+    background: linear-gradient(90deg, rgba(139, 69, 19, 0.2) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(25, 25, 112, 0.2) 100%);
+    border-top: 3px solid #8B4513;
+    border-bottom: 3px solid #191970;
 }
 
 
@@ -115,6 +143,9 @@ button:active {
     font-size: 2rem;
     font-weight: bold;
     letter-spacing: 2px;
+    font-family: 'Cinzel', serif;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 
@@ -129,7 +160,7 @@ button:active {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0,0,0,.75);
+    background: rgba(0,0,0,.85);
     z-index: 10;
 }
 
@@ -143,22 +174,26 @@ button:active {
     width: 85%;
     max-width: 400px;
     padding: 35px;
-    background: #222;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     border-radius: 25px;
     text-align: center;
-    border: 2px solid #555;
+    border: 3px solid #FFD700;
 }
 
 
 .modal h1 {
     font-size: 2rem;
     margin-bottom: 20px;
+    font-family: 'Cinzel', serif;
+    color: #FFD700;
+    letter-spacing: 2px;
 }
 
 
 .modal p {
     font-size: 1.4rem;
     margin-bottom: 25px;
+    color: #FFD700;
 }
 
 
@@ -168,16 +203,30 @@ button:active {
     margin-top: 15px;
     font-size: 1.2rem;
     border-radius: 15px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
 }
 
 
 #next-game-button {
-    background: #3a6;
+    background: #2d5a2d;
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+}
+
+#next-game-button:active {
+    background: #1e3a1e;
 }
 
 
 #undo-button {
-    background: #555;
+    background: #2d2d4a;
+    border: 2px solid #666;
+    color: #aaa;
+}
+
+#undo-button:active {
+    background: #1a1a2e;
 }
 
 /* ========================= 
@@ -189,8 +238,8 @@ nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: #1b1b1b;
-    border-top: 2px solid #333;
+    background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%);
+    border-top: 3px solid #FFD700;
     z-index: 5;
 }
 
@@ -203,21 +252,23 @@ nav button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
     opacity: 0.5;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, text-shadow 0.2s ease;
     border: none;
     cursor: pointer;
 }
 
 nav button span {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     display: block;
-    font-weight: 500;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
 }
 
 nav button.active {
     opacity: 1;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 
 /* Pages */
@@ -231,16 +282,21 @@ nav button.active {
 .hidden-page {
     display: none;
     height: calc(100vh - 70px);
-    padding: 20px;
+    padding: 30px;
     overflow-y: auto;
     overflow-x: hidden;
     flex-direction: column;
+    background: #0a0e27;
 }
 
 .hidden-page h1 {
     text-align: center;
-    margin-bottom: 25px;
-    font-size: 1.8rem;
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    font-family: 'Cinzel', serif;
+    color: #FFD700;
+    letter-spacing: 3px;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
 /* Slide animations */
@@ -308,107 +364,102 @@ nav button.active {
 /* Stat Cards */
 
 .stat-card {
-    background: #222;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     border-radius: 20px;
-    padding: 20px;
+    padding: 25px;
     margin-bottom: 20px;
     text-align: center;
-    border: 1px solid #333;
+    border: 2px solid #FFD700;
 }
 
 .stat-card h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin-bottom: 15px;
-    opacity: 0.9;
+    opacity: 0.95;
+    font-family: 'Cinzel', serif;
+    color: #FFD700;
+    letter-spacing: 2px;
 }
 
 .stat-card p {
-    font-size: 1.1rem;
-    margin: 8px 0;
-    opacity: 0.8;
+    font-size: 1.2rem;
+    margin: 10px;
+    opacity: .85;
+    font-family: 'Crimson Text', serif;
 }
 
 /* History Screen */
 
 #history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-#history-list p {
-    text-align: center;
-    opacity: 0.6;
-    padding: 20px;
+    margin-top: 20px;
 }
 
 .history-card {
-    background: #222;
-    padding: 18px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 20px;
     border-radius: 18px;
+    margin-bottom: 15px;
     text-align: center;
-    border: 1px solid #333;
+    border: 2px solid #FFD700;
 }
 
 .history-card h2 {
-    font-size: 1.3rem;
-    margin-bottom: 8px;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    font-family: 'Cinzel', serif;
+    color: #FFD700;
+    letter-spacing: 1px;
 }
 
 .history-card p {
-    opacity: 0.7;
-    margin: 4px 0;
-    font-size: 0.95rem;
+    opacity: .85;
+    margin: 5px;
+    font-family: 'Crimson Text', serif;
 }
 
-/* Settings Screen Buttons */
-
-#settings-screen {
-    display: none;
-}
-
-#settings-screen.active {
-    display: flex;
-}
+/* Settings Screen */
 
 #settings-screen .stat-card button {
     width: 100%;
-    height: 50px;
+    height: 55px;
     margin: 10px 0;
-    font-size: 1rem;
-    border-radius: 12px;
-    background: #252525;
-    color: white;
-    border: 1px solid #333;
+    font-size: 1.1rem;
+    border-radius: 15px;
+    background: #1a1a2e;
+    border: 2px solid #FFD700;
+    color: #FFD700;
     cursor: pointer;
     transition: all 0.2s ease;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
 }
 
 #settings-screen .stat-card button:hover {
-    background: #333;
-    border-color: #444;
+    background: #16213e;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 #settings-screen .stat-card button:active {
-    background: #444;
+    background: #0f0f1f;
     transform: scale(0.98);
 }
 
 /* Scrollbar Styling */
 
 .hidden-page::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .hidden-page::-webkit-scrollbar-track {
-    background: #111;
+    background: #0a0e27;
 }
 
 .hidden-page::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 3px;
+    background: #FFD700;
+    border-radius: 4px;
+    opacity: 0.6;
 }
 
 .hidden-page::-webkit-scrollbar-thumb:hover {
-    background: #444;
+    opacity: 1;
 }
