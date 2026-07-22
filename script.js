@@ -20,7 +20,8 @@ const DEFAULT_STATE = {
         startTime: null
     },
 
-    games: []
+    games: [],
+    startingLife: 20
 };
 
 
@@ -72,7 +73,7 @@ document.getElementById("next-game-button")
 
 render();
 
-setInterval(updateTimer,1000);
+setInterval(updateTimer, 1000);
 
 
 
@@ -187,8 +188,8 @@ function finishGame(winner, loser){
 
 function nextGame(){
 
-    state.players.top.life = 20;
-    state.players.bottom.life = 20;
+    state.players.top.life = state.startingLife;
+    state.players.bottom.life = state.startingLife;
 
 
     state.timer = {
@@ -351,6 +352,7 @@ function loadState(){
         loaded.players.bottom.wins ??= 0;
         loaded.players.bottom.losses ??= 0;
         loaded.games ??= [];
+        loaded.startingLife ??= 20;
 
 
         return loaded;
@@ -373,17 +375,22 @@ const pages = {
 
 const pageOrder = ['game', 'season', 'history', 'settings'];
 let currentPage = 'game';
+let isAnimating = false;
 
 // Set up nav button listeners
 document.querySelectorAll("nav button").forEach(button => {
     button.onclick = (e) => {
         e.preventDefault();
-        navigateTo(button.dataset.page);
+        if (!isAnimating) {
+            navigateTo(button.dataset.page);
+        }
     };
 });
 
 function navigateTo(newPage) {
-    if (newPage === currentPage) return; // Don't re-navigate
+    if (newPage === currentPage || isAnimating) return;
+    
+    isAnimating = true;
     
     const currentPageEl = pages[currentPage];
     const newPageEl = pages[newPage];
@@ -393,12 +400,10 @@ function navigateTo(newPage) {
     const newIndex = pageOrder.indexOf(newPage);
     const direction = newIndex > currentIndex ? 'right' : 'left';
     
-    // Remove active class from all buttons
+    // Update nav buttons
     document.querySelectorAll("nav button").forEach(b => {
         b.classList.remove("active");
     });
-    
-    // Add active class to current button
     document.querySelector(`nav button[data-page="${newPage}"]`).classList.add("active");
     
     // Animate out current page
@@ -409,8 +414,8 @@ function navigateTo(newPage) {
     // Animate in new page
     setTimeout(() => {
         if (currentPageEl) {
-            currentPageEl.style.display = "none";
             currentPageEl.classList.remove(`slide-out-${direction}`);
+            currentPageEl.style.display = "none";
         }
         
         if (newPageEl) {
@@ -424,7 +429,8 @@ function navigateTo(newPage) {
             // Remove animation class after animation completes
             setTimeout(() => {
                 newPageEl.classList.remove(`slide-in-${direction}`);
-            }, 350);
+                isAnimating = false;
+            }, 300);
         }
         
         currentPage = newPage;
@@ -436,250 +442,92 @@ document.querySelector('nav button[data-page="game"]').classList.add("active");
 
 function updateSeason(){
 
+    document.getElementById("season-adam-name").textContent = state.players.bottom.name;
+    document.getElementById("season-sydney-name").textContent = state.players.top.name;
 
-document.getElementById("season-adam-name")
-.textContent =
-state.players.bottom.name;
+    document.getElementById("adam-wins").textContent = state.players.bottom.wins;
+    document.getElementById("adam-losses").textContent = state.players.bottom.losses;
+    document.getElementById("sydney-wins").textContent = state.players.top.wins;
+    document.getElementById("sydney-losses").textContent = state.players.top.losses;
 
+    let adamGames = state.players.bottom.wins + state.players.bottom.losses;
+    let sydneyGames = state.players.top.wins + state.players.top.losses;
 
-document.getElementById("season-sydney-name")
-.textContent =
-state.players.top.name;
-
-
-
-document.getElementById("adam-wins")
-.textContent =
-state.players.bottom.wins;
-
-
-document.getElementById("adam-losses")
-.textContent =
-state.players.bottom.losses;
-
-
-document.getElementById("sydney-wins")
-.textContent =
-state.players.top.wins;
-
-
-document.getElementById("sydney-losses")
-.textContent =
-state.players.top.losses;
-
-
-
-let adamGames =
-state.players.bottom.wins +
-state.players.bottom.losses;
-
-
-let sydneyGames =
-state.players.top.wins +
-state.players.top.losses;
-
-
-
-document.getElementById("adam-rate")
-.textContent =
-adamGames
-?
-Math.round(
-state.players.bottom.wins / adamGames * 100
-)
-+"%"
-:
-"0%";
-
-
-document.getElementById("sydney-rate")
-.textContent =
-sydneyGames
-?
-Math.round(
-state.players.top.wins / sydneyGames * 100
-)
-+"%"
-:
-"0%";
-
-
+    document.getElementById("adam-rate").textContent = adamGames ? Math.round(state.players.bottom.wins / adamGames * 100) + "%" : "0%";
+    document.getElementById("sydney-rate").textContent = sydneyGames ? Math.round(state.players.top.wins / sydneyGames * 100) + "%" : "0%";
 }
 
 function updateHistory(){
 
+    let list = document.getElementById("history-list");
 
-let list =
-document.getElementById("history-list");
+    if(state.games.length === 0){
+        list.innerHTML = "<p>No games played yet.</p>";
+        return;
+    }
 
+    list.innerHTML = "";
 
-if(state.games.length === 0){
-
-list.innerHTML =
-"<p>No games played yet.</p>";
-
-return;
-
-}
-
-
-
-list.innerHTML = "";
-
-
-[...state.games]
-.reverse()
-.forEach(game => {
-
-
-let card =
-document.createElement("div");
-
-
-card.className =
-"history-card";
-
-
-card.innerHTML = `
-
-<h2>
-🏆 ${game.winner}
-</h2>
-
-<p>
-Defeated ${game.loser}
-</p>
-
-<p>
-⏱ ${formatTime(game.duration)}
-</p>
-
-<p>
-${game.date}
-</p>
-
-`;
-
-
-list.appendChild(card);
-
-
-});
-
-
+    [...state.games].reverse().forEach(game => {
+        let card = document.createElement("div");
+        card.className = "history-card";
+        card.innerHTML = `
+            <h2>🏆 ${game.winner}</h2>
+            <p>Defeated ${game.loser}</p>
+            <p>⏱ ${formatTime(game.duration)}</p>
+            <p>${game.date}</p>
+        `;
+        list.appendChild(card);
+    });
 }
 
 // ============= SETTINGS =============
 
-
-const settingsScreen =
-document.getElementById("settings-screen");
-
-
-
 function updateSettingsLife(amount){
-
-localStorage.setItem(
-"startingLife",
-amount
-);
-
+    state.startingLife = amount;
+    saveState();
 }
 
+document.getElementById("edit-adam-name").onclick = () => editName("bottom");
+document.getElementById("edit-sydney-name").onclick = () => editName("top");
 
+document.getElementById("life-20").onclick = () => updateSettingsLife(20);
+document.getElementById("life-30").onclick = () => updateSettingsLife(30);
+document.getElementById("life-40").onclick = () => updateSettingsLife(40);
 
-document.getElementById("edit-adam-name")
-.onclick = () => editName("bottom");
-
-
-document.getElementById("edit-sydney-name")
-.onclick = () => editName("top");
-
-
-
-document.getElementById("life-20")
-.onclick = () => updateSettingsLife(20);
-
-
-document.getElementById("life-30")
-.onclick = () => updateSettingsLife(30);
-
-
-document.getElementById("life-40")
-.onclick = () => updateSettingsLife(40);
-
-
-
-document.getElementById("reset-season")
-.onclick = () => {
-
-
-if(confirm("Reset wins and losses?")){
-
-
-state.players.top.wins = 0;
-state.players.top.losses = 0;
-
-state.players.bottom.wins = 0;
-state.players.bottom.losses = 0;
-
-
-saveState();
-
-
-alert("Season reset");
-
-}
-
+document.getElementById("reset-season").onclick = () => {
+    if(confirm("Reset wins and losses?")){
+        state.players.top.wins = 0;
+        state.players.top.losses = 0;
+        state.players.bottom.wins = 0;
+        state.players.bottom.losses = 0;
+        saveState();
+        updateSeason();
+        alert("Season reset");
+    }
 };
 
-
-
-document.getElementById("clear-history")
-.onclick = () => {
-
-
-if(confirm("Delete all game history?")){
-
-
-state.games = [];
-
-saveState();
-
-
-alert("History cleared");
-
-}
-
+document.getElementById("clear-history").onclick = () => {
+    if(confirm("Delete all game history?")){
+        state.games = [];
+        saveState();
+        updateHistory();
+        alert("History cleared");
+    }
 };
 
-
-
-document.getElementById("reset-all")
-.onclick = () => {
-
-
-if(confirm("Erase everything?")){
-
-
-localStorage.removeItem("lifeLedger");
-
-
-location.reload();
-
-}
-
+document.getElementById("reset-all").onclick = () => {
+    if(confirm("Erase everything?")){
+        localStorage.removeItem("lifeLedger");
+        location.reload();
+    }
 };
 
 // Register PWA Service Worker
 
 if ("serviceWorker" in navigator) {
-
     navigator.serviceWorker.register("./service-worker.js")
     .then(() => {
-
         console.log("Life Ledger is ready offline");
-
     });
-
 }
