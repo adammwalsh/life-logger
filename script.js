@@ -377,15 +377,34 @@ const pageOrder = ['game', 'season', 'history', 'settings'];
 let currentPage = 'game';
 let isAnimating = false;
 
-// Set up nav button listeners
-document.querySelectorAll("nav button").forEach(button => {
-    button.onclick = (e) => {
-        e.preventDefault();
-        if (!isAnimating) {
-            navigateTo(button.dataset.page);
-        }
-    };
-});
+// Wait for DOM to be ready, then set up nav
+function setupNavigation() {
+    const navButtons = document.querySelectorAll("nav button");
+    
+    if (navButtons.length === 0) {
+        console.error("Navigation buttons not found!");
+        return;
+    }
+    
+    navButtons.forEach(button => {
+        button.onclick = (e) => {
+            e.preventDefault();
+            if (!isAnimating) {
+                navigateTo(button.dataset.page);
+            }
+        };
+    });
+    
+    // Initialize first page as active
+    document.querySelector('nav button[data-page="game"]').classList.add("active");
+}
+
+// Call setup when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupNavigation);
+} else {
+    setupNavigation();
+}
 
 function navigateTo(newPage) {
     if (newPage === currentPage || isAnimating) return;
@@ -394,6 +413,12 @@ function navigateTo(newPage) {
     
     const currentPageEl = pages[currentPage];
     const newPageEl = pages[newPage];
+    
+    if (!currentPageEl || !newPageEl) {
+        console.error(`Page not found: ${currentPage} or ${newPage}`);
+        isAnimating = false;
+        return;
+    }
     
     // Determine direction
     const currentIndex = pageOrder.indexOf(currentPage);
@@ -407,38 +432,29 @@ function navigateTo(newPage) {
     document.querySelector(`nav button[data-page="${newPage}"]`).classList.add("active");
     
     // Animate out current page
-    if (currentPageEl) {
-        currentPageEl.classList.add(`slide-out-${direction}`);
-    }
+    currentPageEl.classList.add(`slide-out-${direction}`);
     
     // Animate in new page
     setTimeout(() => {
-        if (currentPageEl) {
-            currentPageEl.classList.remove(`slide-out-${direction}`);
-            currentPageEl.style.display = "none";
-        }
+        currentPageEl.classList.remove(`slide-out-${direction}`);
+        currentPageEl.style.display = "none";
         
-        if (newPageEl) {
-            // Update dynamic content based on page
-            if (newPage === "season") updateSeason();
-            if (newPage === "history") updateHistory();
-            
-            newPageEl.style.display = newPage === 'game' ? "flex" : "block";
-            newPageEl.classList.add(`slide-in-${direction}`);
-            
-            // Remove animation class after animation completes
-            setTimeout(() => {
-                newPageEl.classList.remove(`slide-in-${direction}`);
-                isAnimating = false;
-            }, 300);
-        }
+        // Update dynamic content based on page
+        if (newPage === "season") updateSeason();
+        if (newPage === "history") updateHistory();
+        
+        newPageEl.style.display = newPage === 'game' ? "flex" : "block";
+        newPageEl.classList.add(`slide-in-${direction}`);
+        
+        // Remove animation class after animation completes
+        setTimeout(() => {
+            newPageEl.classList.remove(`slide-in-${direction}`);
+            isAnimating = false;
+        }, 300);
         
         currentPage = newPage;
     }, 250);
 }
-
-// Initialize first page as active
-document.querySelector('nav button[data-page="game"]').classList.add("active");
 
 function updateSeason(){
 
