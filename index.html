@@ -69,28 +69,17 @@ Adam
 
 
 
-<!-- SEASON -->
-
 <div id="season-screen" class="hidden-page">
 
 <h1>🏆 Season</h1>
-
 
 <div class="stat-card">
 
 <h2 id="season-adam-name"></h2>
 
-<p>Wins:
-<span id="adam-wins">0</span>
-</p>
-
-<p>Losses:
-<span id="adam-losses">0</span>
-</p>
-
-<p>Win Rate:
-<span id="adam-rate">0%</span>
-</p>
+<p>Wins: <span id="adam-wins">0</span></p>
+<p>Losses: <span id="adam-losses">0</span></p>
+<p>Win Rate: <span id="adam-rate">0%</span></p>
 
 </div>
 
@@ -99,50 +88,109 @@ Adam
 
 <h2 id="season-sydney-name"></h2>
 
-<p>Wins:
-<span id="sydney-wins">0</span>
-</p>
+<p>Wins: <span id="sydney-wins">0</span></p>
+<p>Losses: <span id="sydney-losses">0</span></p>
+<p>Win Rate: <span id="sydney-rate">0%</span></p>
 
-<p>Losses:
-<span id="sydney-losses">0</span>
-</p>
-
-<p>Win Rate:
-<span id="sydney-rate">0%</span>
-</p>
+</div>
 
 </div>
 
 
-</div>
-
-
-
-
-<!-- HISTORY -->
 
 <div id="history-screen" class="hidden-page">
 
 <h1>📜 History</h1>
 
 <div id="history-list">
-
 <p>No games played yet.</p>
-
 </div>
 
 </div>
+
+
+
+<!-- SETTINGS -->
+
+<div id="settings-screen" class="hidden-page">
+
+<h1>⚙️ Settings</h1>
+
+
+<div class="stat-card">
+
+<h2>Players</h2>
+
+
+<button id="edit-adam-name">
+Edit Adam Name
+</button>
+
+
+<button id="edit-sydney-name">
+Edit Sydney Name
+</button>
+
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2>Starting Life</h2>
+
+
+<button id="life-20">
+20 Life
+</button>
+
+<button id="life-30">
+30 Life
+</button>
+
+<button id="life-40">
+40 Life
+</button>
+
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2>Data</h2>
+
+
+<button id="reset-season">
+Reset Season
+</button>
+
+
+<button id="clear-history">
+Clear History
+</button>
+
+
+<button id="reset-all">
+Reset Everything
+</button>
+
+
+</div>
+
+
+</div>
+
 
 
 
 <nav>
 
 <button data-page="game">❤️</button>
-
 <button data-page="season">🏆</button>
-
 <button data-page="history">📜</button>
-
 <button data-page="settings">⚙️</button>
 
 </nav>
