@@ -1,4 +1,7 @@
-/* Reset */
+/* =========================
+   Life Ledger Styles
+   ========================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -12,10 +15,11 @@ body {
     overflow: hidden;
     background: #111;
     color: white;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     user-select: none;
     touch-action: manipulation;
 }
+
 
 #app {
     display: flex;
@@ -23,86 +27,243 @@ body {
     height: 100vh;
 }
 
+
 /* Player Areas */
 
 .player {
+
     flex: 1;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 24px;
+
+    gap: 18px;
+
 }
+
 
 .top {
+
     transform: rotate(180deg);
+
     border-bottom: 2px solid #333;
+
 }
 
+
 .bottom {
+
     border-top: 2px solid #333;
+
 }
+
+
 
 /* Names */
 
 .player-name {
+
     font-size: 2rem;
+
     font-weight: 600;
-    opacity: .8;
+
+    opacity: .85;
+
 }
 
-/* Life */
+
+
+/* Life Total */
 
 .life {
+
     font-size: 7rem;
-    font-weight: bold;
+
+    font-weight: 800;
+
     line-height: 1;
+
 }
+
+
 
 /* Buttons */
 
 .controls {
+
     display: flex;
-    gap: 32px;
+
+    gap: 35px;
+
 }
 
+
 button {
+
     width: 80px;
+
     height: 80px;
 
-    border: none;
     border-radius: 20px;
+
+    border: none;
+
+    background: #252525;
+
+    color: white;
 
     font-size: 2.5rem;
 
-    background: #222;
-    color: white;
+    font-weight: bold;
 
-    transition: .15s;
 }
+
 
 button:active {
-    transform: scale(.95);
+
+    transform: scale(.94);
+
     background: #444;
+
 }
 
-/* Center */
+
+
+/* Timer Divider */
 
 #center {
+
     height: 72px;
 
     display: flex;
+
     justify-content: center;
+
     align-items: center;
 
-    background: #1a1a1a;
+    background: #1b1b1b;
 
     border-top: 2px solid #333;
+
     border-bottom: 2px solid #333;
+
 }
 
+
+
 #timer {
+
     font-size: 2rem;
+
     font-weight: bold;
+
     letter-spacing: 2px;
+
+}
+
+
+
+/* =========================
+   Game Over Modal
+   ========================= */
+
+
+#game-over {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: rgba(0,0,0,.75);
+
+    z-index: 10;
+
+}
+
+
+
+#game-over.hidden {
+
+    display: none;
+
+}
+
+
+
+.modal {
+
+    width: 85%;
+
+    max-width: 400px;
+
+    padding: 35px;
+
+    background: #222;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    border: 2px solid #555;
+
+}
+
+
+
+.modal h1 {
+
+    font-size: 2rem;
+
+    margin-bottom: 20px;
+
+}
+
+
+
+.modal p {
+
+    font-size: 1.4rem;
+
+    margin-bottom: 25px;
+
+}
+
+
+
+.modal button {
+
+    width: 100%;
+
+    height: 55px;
+
+    margin-top: 15px;
+
+    font-size: 1.2rem;
+
+    border-radius: 15px;
+
+}
+
+
+
+#next-game-button {
+
+    background: #3a6;
+
+}
+
+
+
+#undo-button {
+
+    background: #555;
+
 }
