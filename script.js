@@ -90,7 +90,26 @@ function changeLife(player, amount){
     }
 
 
-    state.players[player].life += amount;
+    const previousLife = state.players[player].life;
+
+state.players[player].life += amount;
+
+
+state.lifeHistory.push({
+
+    player: player,
+
+    name: state.players[player].name,
+
+    change: amount,
+
+    before: previousLife,
+
+    after: state.players[player].life,
+
+    time: new Date().toLocaleTimeString()
+
+});
 
 
     checkWinner();
