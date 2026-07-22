@@ -59,10 +59,6 @@ document.getElementById("adam-minus")
 .onclick = () => changeLife("bottom",-1);
 
 
-topName.onclick = () => editName("top");
-bottomName.onclick = () => editName("bottom");
-
-
 document.getElementById("undo-button")
 .onclick = undoGame;
 
@@ -228,29 +224,6 @@ function undoGame(){
     saveState();
 
     render();
-
-}
-
-
-
-function editName(player){
-
-    let name =
-    prompt(
-        "Player Name",
-        state.players[player].name
-    );
-
-
-    if(name){
-
-        state.players[player].name = name;
-
-        saveState();
-
-        render();
-
-    }
 
 }
 
@@ -503,9 +476,6 @@ function updateSettingsLife(amount){
     state.startingLife = amount;
     saveState();
 }
-
-document.getElementById("edit-adam-name").onclick = () => editName("bottom");
-document.getElementById("edit-sydney-name").onclick = () => editName("top");
 
 document.getElementById("life-20").onclick = () => updateSettingsLife(20);
 document.getElementById("life-30").onclick = () => updateSettingsLife(30);
