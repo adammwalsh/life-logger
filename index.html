@@ -1,92 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Life Ledger</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="theme-color" content="#111111">
+<title>Life Ledger</title>
 
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#111111">
+
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
+
 <div id="app">
 
-    <section id="sydney" class="player top">
 
-        <div id="sydney-name" class="player-name">
-            Sydney
-        </div>
+<!-- GAME SCREEN -->
 
-        <div id="sydney-life" class="life">
-            20
-        </div>
-
-        <div class="controls">
-            <button id="sydney-minus">−</button>
-            <button id="sydney-plus">+</button>
-        </div>
-
-    </section>
+<div id="game-screen">
 
 
-    <section id="center">
+<section id="sydney" class="player top">
 
-        <div id="timer">
-            ⏱ 00:00
-        </div>
+<div id="sydney-name" class="player-name">
+Sydney
+</div>
 
-    </section>
+<div id="sydney-life" class="life">
+20
+</div>
+
+<div class="controls">
+<button id="sydney-minus">−</button>
+<button id="sydney-plus">+</button>
+</div>
+
+</section>
 
 
-    <section id="adam" class="player bottom">
 
-        <div id="adam-name" class="player-name">
-            Adam
-        </div>
+<section id="center">
 
-        <div id="adam-life" class="life">
-            20
-        </div>
+<div id="timer">
+⏱ 00:00
+</div>
 
-        <div class="controls">
-            <button id="adam-minus">−</button>
-            <button id="adam-plus">+</button>
-        </div>
+</section>
 
-    </section>
+
+
+<section id="adam" class="player bottom">
+
+<div id="adam-name" class="player-name">
+Adam
+</div>
+
+<div id="adam-life" class="life">
+20
+</div>
+
+<div class="controls">
+<button id="adam-minus">−</button>
+<button id="adam-plus">+</button>
+</div>
+
+</section>
 
 
 </div>
 
 
-<!-- Game Over Popup -->
+
+<!-- SEASON SCREEN -->
+
+<div id="season-screen" class="hidden-page">
+
+
+<h1>🏆 Season</h1>
+
+
+<div class="stat-card">
+
+<h2 id="season-adam-name">
+Adam
+</h2>
+
+<p>
+Wins:
+<span id="adam-wins">0</span>
+</p>
+
+<p>
+Losses:
+<span id="adam-losses">0</span>
+</p>
+
+<p>
+Win Rate:
+<span id="adam-rate">0%</span>
+</p>
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2 id="season-sydney-name">
+Sydney
+</h2>
+
+<p>
+Wins:
+<span id="sydney-wins">0</span>
+</p>
+
+<p>
+Losses:
+<span id="sydney-losses">0</span>
+</p>
+
+<p>
+Win Rate:
+<span id="sydney-rate">0%</span>
+</p>
+
+</div>
+
+
+</div>
+
+
+
+<!-- NAVIGATION -->
+
+<nav>
+
+<button data-page="game">
+❤️
+</button>
+
+<button data-page="season">
+🏆
+</button>
+
+<button data-page="history">
+📜
+</button>
+
+<button data-page="settings">
+⚙️
+</button>
+
+</nav>
+
+
+
+<!-- GAME OVER -->
 
 <div id="game-over" class="hidden">
 
-    <div class="modal">
+<div class="modal">
 
-        <h1 id="winner-text">
-            Winner!
-        </h1>
+<h1 id="winner-text">
+Winner!
+</h1>
 
-        <p id="final-time">
-            Time: 00:00
-        </p>
+<p id="final-time">
+Time
+</p>
 
-        <button id="undo-button">
-            Undo
-        </button>
 
-        <button id="next-game-button">
-            Next Game
-        </button>
+<button id="undo-button">
+Undo
+</button>
 
-    </div>
+<button id="next-game-button">
+Next Game
+</button>
+
+
+</div>
+
+</div>
+
+
 
 </div>
 
