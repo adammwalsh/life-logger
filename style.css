@@ -267,3 +267,92 @@ button:active {
     background: #555;
 
 }
+/* Navigation */
+
+nav {
+
+height:70px;
+
+display:flex;
+
+justify-content:space-around;
+
+align-items:center;
+
+background:#1b1b1b;
+
+border-top:2px solid #333;
+
+}
+
+
+nav button {
+
+width:60px;
+
+height:50px;
+
+font-size:1.8rem;
+
+background:none;
+
+}
+
+
+
+/* Pages */
+
+.hidden-page {
+
+display:none;
+
+height:calc(100vh - 70px);
+
+padding:30px;
+
+overflow:auto;
+
+}
+
+
+#season-screen h1 {
+
+text-align:center;
+
+margin-bottom:30px;
+
+}
+
+
+
+.stat-card {
+
+background:#222;
+
+border-radius:20px;
+
+padding:25px;
+
+margin-bottom:20px;
+
+text-align:center;
+
+}
+
+
+.stat-card h2 {
+
+font-size:2rem;
+
+margin-bottom:15px;
+
+}
+
+
+.stat-card p {
+
+font-size:1.3rem;
+
+margin:10px;
+
+}
