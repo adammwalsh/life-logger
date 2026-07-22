@@ -1,1 +1,108 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #111;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Player Areas */
+
+.player {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.top {
+    transform: rotate(180deg);
+    border-bottom: 2px solid #333;
+}
+
+.bottom {
+    border-top: 2px solid #333;
+}
+
+/* Names */
+
+.player-name {
+    font-size: 2rem;
+    font-weight: 600;
+    opacity: .8;
+}
+
+/* Life */
+
+.life {
+    font-size: 7rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Buttons */
+
+.controls {
+    display: flex;
+    gap: 32px;
+}
+
+button {
+    width: 80px;
+    height: 80px;
+
+    border: none;
+    border-radius: 20px;
+
+    font-size: 2.5rem;
+
+    background: #222;
+    color: white;
+
+    transition: .15s;
+}
+
+button:active {
+    transform: scale(.95);
+    background: #444;
+}
+
+/* Center */
+
+#center {
+    height: 72px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #1a1a1a;
+
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+}
+
+#timer {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
