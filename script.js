@@ -592,3 +592,104 @@ list.appendChild(card);
 
 
 }
+// SETTINGS
+
+
+const settingsScreen =
+document.getElementById("settings-screen");
+
+
+
+function updateSettingsLife(amount){
+
+localStorage.setItem(
+"startingLife",
+amount
+);
+
+}
+
+
+
+document.getElementById("edit-adam-name")
+.onclick = () => editName("bottom");
+
+
+document.getElementById("edit-sydney-name")
+.onclick = () => editName("top");
+
+
+
+document.getElementById("life-20")
+.onclick = () => updateSettingsLife(20);
+
+
+document.getElementById("life-30")
+.onclick = () => updateSettingsLife(30);
+
+
+document.getElementById("life-40")
+.onclick = () => updateSettingsLife(40);
+
+
+
+document.getElementById("reset-season")
+.onclick = () => {
+
+
+if(confirm("Reset wins and losses?")){
+
+
+state.players.top.wins = 0;
+state.players.top.losses = 0;
+
+state.players.bottom.wins = 0;
+state.players.bottom.losses = 0;
+
+
+saveState();
+
+
+alert("Season reset");
+
+}
+
+};
+
+
+
+document.getElementById("clear-history")
+.onclick = () => {
+
+
+if(confirm("Delete all game history?")){
+
+
+state.games = [];
+
+saveState();
+
+
+alert("History cleared");
+
+}
+
+};
+
+
+
+document.getElementById("reset-all")
+.onclick = () => {
+
+
+if(confirm("Erase everything?")){
+
+
+localStorage.removeItem("lifeLedger");
+
+
+location.reload();
+
+}
+
+};
