@@ -21,6 +21,7 @@ const DEFAULT_STATE = {
     },
 
     games: [],
+    lifeHistory: [],
     startingLife: 20
 };
 
