@@ -515,19 +515,27 @@ function editSeason(player){
 }
 function updateSeason(){
 
-    document.getElementById("season-adam-name").textContent =
-        state.players.bottom.name;
+    console.log("Season update started");
+
+    console.log(state);
+
+    const adamName = document.getElementById("season-adam-name");
+
+    if(!adamName){
+        console.error("Season HTML missing");
+        return;
+    }
+
+    adamName.textContent = state.players.bottom.name;
 
     document.getElementById("season-sydney-name").textContent =
         state.players.top.name;
-
 
     document.getElementById("adam-wins").textContent =
         state.players.bottom.wins;
 
     document.getElementById("adam-losses").textContent =
         state.players.bottom.losses;
-
 
     document.getElementById("sydney-wins").textContent =
         state.players.top.wins;
@@ -536,30 +544,7 @@ function updateSeason(){
         state.players.top.losses;
 
 
-    let adamGames =
-        state.players.bottom.wins +
-        state.players.bottom.losses;
-
-
-    let sydneyGames =
-        state.players.top.wins +
-        state.players.top.losses;
-
-
-    document.getElementById("adam-rate").textContent =
-        adamGames
-        ? Math.round(
-            state.players.bottom.wins / adamGames * 100
-          ) + "%"
-        : "0%";
-
-
-    document.getElementById("sydney-rate").textContent =
-        sydneyGames
-        ? Math.round(
-            state.players.top.wins / sydneyGames * 100
-          ) + "%"
-        : "0%";
+    console.log("Season update complete");
 
 }
 
