@@ -337,7 +337,7 @@ function loadState(){
 
 }
 
-// ============= NAVIGATION =============
+// ============= NAVIGATION & SETTINGS =============
 
 const pages = {
     game: document.getElementById("game-screen"),
@@ -350,8 +350,8 @@ const pageOrder = ['game', 'season', 'history', 'settings'];
 let currentPage = 'game';
 let isAnimating = false;
 
-// Wait for DOM to be ready, then set up nav
-function setupNavigation() {
+// Wait for DOM to be ready, then set up nav and settings
+function setupUI() {
     const navButtons = document.querySelectorAll("nav button");
     
     if (navButtons.length === 0) {
@@ -359,6 +359,7 @@ function setupNavigation() {
         return;
     }
     
+    // Setup navigation
     navButtons.forEach(button => {
         button.onclick = (e) => {
             e.preventDefault();
@@ -370,13 +371,63 @@ function setupNavigation() {
     
     // Initialize first page as active
     document.querySelector('nav button[data-page="game"]').classList.add("active");
+    
+    // Setup settings buttons
+    setupSettingsButtons();
+}
+
+function setupSettingsButtons() {
+    const life20 = document.getElementById("life-20");
+    const life30 = document.getElementById("life-30");
+    const life40 = document.getElementById("life-40");
+    const resetSeason = document.getElementById("reset-season");
+    const clearHistory = document.getElementById("clear-history");
+    const resetAll = document.getElementById("reset-all");
+    
+    if (life20) life20.onclick = () => updateSettingsLife(20);
+    if (life30) life30.onclick = () => updateSettingsLife(30);
+    if (life40) life40.onclick = () => updateSettingsLife(40);
+    
+    if (resetSeason) {
+        resetSeason.onclick = () => {
+            if(confirm("Reset wins and losses?")){
+                state.players.top.wins = 0;
+                state.players.top.losses = 0;
+                state.players.bottom.wins = 0;
+                state.players.bottom.losses = 0;
+                saveState();
+                updateSeason();
+                alert("Season reset");
+            }
+        };
+    }
+    
+    if (clearHistory) {
+        clearHistory.onclick = () => {
+            if(confirm("Delete all game history?")){
+                state.games = [];
+                saveState();
+                updateHistory();
+                alert("History cleared");
+            }
+        };
+    }
+    
+    if (resetAll) {
+        resetAll.onclick = () => {
+            if(confirm("Erase everything?")){
+                localStorage.removeItem("lifeLedger");
+                location.reload();
+            }
+        };
+    }
 }
 
 // Call setup when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupNavigation);
+    document.addEventListener('DOMContentLoaded', setupUI);
 } else {
-    setupNavigation();
+    setupUI();
 }
 
 function navigateTo(newPage) {
@@ -475,39 +526,8 @@ function updateHistory(){
 function updateSettingsLife(amount){
     state.startingLife = amount;
     saveState();
+    console.log("Starting life updated to:", amount);
 }
-
-document.getElementById("life-20").onclick = () => updateSettingsLife(20);
-document.getElementById("life-30").onclick = () => updateSettingsLife(30);
-document.getElementById("life-40").onclick = () => updateSettingsLife(40);
-
-document.getElementById("reset-season").onclick = () => {
-    if(confirm("Reset wins and losses?")){
-        state.players.top.wins = 0;
-        state.players.top.losses = 0;
-        state.players.bottom.wins = 0;
-        state.players.bottom.losses = 0;
-        saveState();
-        updateSeason();
-        alert("Season reset");
-    }
-};
-
-document.getElementById("clear-history").onclick = () => {
-    if(confirm("Delete all game history?")){
-        state.games = [];
-        saveState();
-        updateHistory();
-        alert("History cleared");
-    }
-};
-
-document.getElementById("reset-all").onclick = () => {
-    if(confirm("Erase everything?")){
-        localStorage.removeItem("lifeLedger");
-        location.reload();
-    }
-};
 
 // Register PWA Service Worker
 
