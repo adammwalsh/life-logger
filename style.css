@@ -43,7 +43,7 @@ body {
 }
 
 
-player.top {
+.player.top {
     transform: rotate(180deg);
     background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(34, 139, 34, 0.05) 100%);
     border-bottom: 3px solid #8B4513;
@@ -65,7 +65,7 @@ player.top {
     border-top: 3px solid #191970;
 }
 
-player.bottom .life {
+.player.bottom .life {
     color: #00d4ff;
     text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
