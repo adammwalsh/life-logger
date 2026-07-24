@@ -173,7 +173,7 @@ function updateComboBubble(player){
 
     const bubble=document.getElementById(player+"-combo");
 
-    const value=combo[player].amount;
+    const value=yer].amount;
 
     if(value===0){
 
@@ -206,7 +206,7 @@ function updateComboBubble(player){
 
 function commitCombo(player){
 
-    if(combo[player].amount===0)
+    if(yer].amount===0)
         return;
 
     const endLife=state.players[player].life;
@@ -221,11 +221,19 @@ function commitCombo(player){
 
     });
 
-    combo[player].amount=0;
+    const bubble = document.getElementById(player + "-combo");
 
-    combo[player].startLife=null;
+bubble.style.opacity = 0;
+
+combo[player].amount = 0;
+
+combo[player].startLife = null;
+
+setTimeout(() => {
 
     updateComboBubble(player);
+
+},200);
 
     saveState();
 
