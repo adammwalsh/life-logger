@@ -410,7 +410,8 @@ function nextGame(){
 
 
     gameOver.classList.add("hidden");
-
+   state.players.top.journal = [];
+   state.players.bottom.journal = [];
 
     saveState();
 
@@ -537,7 +538,6 @@ function loadState() {
         loaded.players.bottom.losses ??= 0;
 
         loaded.games ??= [];
-        loaded.lifeHistory ??= [];
         loaded.startingLife = Number(loaded.startingLife) || 20;
 
         loaded.timer ??= {
