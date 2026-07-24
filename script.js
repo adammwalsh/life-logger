@@ -3,7 +3,7 @@
    PART 1
    Core State / Input / Combo Engine
 ============================================================ */
-
+alert("1");
 const DEFAULT_STATE = {
     players: {
         top: {
