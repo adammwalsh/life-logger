@@ -1412,3 +1412,152 @@ function setupSettingsButtons() {
     };
 
 }
+function navigateTo(page) {
+
+    if (page === currentPage || isAnimating) return;
+
+    isAnimating = true;
+
+    const oldPage = pages[currentPage];
+    const newPage = pages[page];
+
+    const direction =
+        pageOrder.indexOf(page) > pageOrder.indexOf(currentPage)
+            ? "right"
+            : "left";
+
+    document.querySelectorAll("nav button").forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.page === page
+        );
+
+    });
+
+    oldPage.classList.add("slide-out-" + direction);
+
+    setTimeout(() => {
+
+        oldPage.classList.remove("slide-out-" + direction);
+        oldPage.style.display = "none";
+
+        switch (page) {
+
+            case "game":
+                render();
+                break;
+
+            case "season":
+                updateSeason();
+                break;
+
+            case "history":
+                updateHistory();
+                break;
+
+        }
+
+        newPage.style.display =
+            page === "game" ? "flex" : "block";
+
+        newPage.classList.add("slide-in-" + direction);
+
+        setTimeout(() => {
+
+            newPage.classList.remove("slide-in-" + direction);
+
+            currentPage = page;
+            isAnimating = false;
+
+        }, 300);
+
+    }, 250);
+
+}
+function editSeason(player) {
+
+    const wins = prompt(
+        `Wins for ${state.players[player].name}:`,
+        state.players[player].wins
+    );
+
+    if (wins === null) return;
+
+    const losses = prompt(
+        `Losses for ${state.players[player].name}:`,
+        state.players[player].losses
+    );
+
+    if (losses === null) return;
+
+    state.players[player].wins = Math.max(0, Number(wins) || 0);
+    state.players[player].losses = Math.max(0, Number(losses) || 0);
+
+    saveState();
+    updateSeason();
+
+}
+function updateSeason() {
+
+    document.getElementById("season-sydney-name").textContent =
+        state.players.top.name;
+
+    document.getElementById("season-adam-name").textContent =
+        state.players.bottom.name;
+
+    document.getElementById("sydney-wins").textContent =
+        state.players.top.wins;
+
+    document.getElementById("sydney-losses").textContent =
+        state.players.top.losses;
+
+    document.getElementById("adam-wins").textContent =
+        state.players.bottom.wins;
+
+    document.getElementById("adam-losses").textContent =
+        state.players.bottom.losses;
+
+}
+function updateHistory() {
+
+    const list = document.getElementById("history-list");
+
+    list.replaceChildren();
+
+    if (state.games.length === 0) {
+
+        list.innerHTML = "<p>No games played yet.</p>";
+        return;
+
+    }
+
+    [...state.games].reverse().forEach(game => {
+
+        const card = document.createElement("div");
+
+        card.className = "history-card";
+
+        card.innerHTML = `
+            <h2>🏆 ${game.winner}</h2>
+            <p>Defeated ${game.loser}</p>
+            <p>⏱ ${formatTime(game.duration)}</p>
+            <p>${game.date}</p>
+        `;
+
+        list.appendChild(card);
+
+    });
+
+}
+function updateSettingsLife(amount) {
+
+    state.startingLife = amount;
+
+    nextGame();
+
+    saveState();
+
+    alert(`Starting life set to ${amount}.`);
+
+}
