@@ -876,3 +876,539 @@ if ("serviceWorker" in navigator) {
         console.log("Life Ledger is ready offline");
     });
 }
+/* ============================================================
+   DOM Elements
+============================================================ */
+
+const topPlayer = document.getElementById("sydney");
+const bottomPlayer = document.getElementById("adam");
+
+const topLife = document.getElementById("sydney-life");
+const bottomLife = document.getElementById("adam-life");
+
+const topName = document.getElementById("sydney-name");
+const bottomName = document.getElementById("adam-name");
+
+const timer = document.getElementById("timer");
+
+const gameOver = document.getElementById("game-over");
+const winnerText = document.getElementById("winner-text");
+const finalTime = document.getElementById("final-time");
+/* ============================================================
+   Combo Bubble
+============================================================ */
+
+function createComboBubble(player){
+
+    const bubble = document.createElement("div");
+
+    bubble.id = player + "-combo";
+    bubble.className = "combo-bubble";
+
+    bubble.textContent = "";
+
+    bubble.style.opacity = "0";
+    bubble.style.transform = "translate(-50%,-50%)";
+
+    const parent =
+        player === "top"
+            ? topPlayer
+            : bottomPlayer;
+
+    parent.appendChild(bubble);
+
+}
+
+createComboBubble("top");
+createComboBubble("bottom");
+/* ============================================================
+   Life Journal
+============================================================ */
+
+function createJournal(player){
+
+    const journal = document.createElement("div");
+
+    journal.id = player + "-journal";
+    journal.className = "life-journal";
+
+    const parent =
+        player === "top"
+            ? topPlayer
+            : bottomPlayer;
+
+    parent.appendChild(journal);
+
+}
+
+createJournal("top");
+createJournal("bottom");
+function createJournal(player){
+
+    const journal = document.createElement("div");
+
+    journal.className = "life-journal";
+    journal.id = player + "-journal";
+
+    document
+        .getElementById(player === "top" ? "sydney" : "adam")
+        .appendChild(journal);
+
+}
+
+createJournal("top");
+createJournal("bottom");
+function updateComboBubble(player) {
+
+    const bubble = document.getElementById(player + "-combo");
+    const value = combo[player].amount;
+
+    // Nothing to show
+    if (value === 0) {
+
+        bubble.getAnimations().forEach(a => a.cancel());
+
+        bubble.textContent = "";
+        bubble.style.opacity = 0;
+        bubble.style.transform = "translate(-50%,-50%)";
+
+        return;
+    }
+
+    // Display combo
+    bubble.textContent = (value > 0 ? "+" : "") + value;
+
+    bubble.getAnimations().forEach(a => a.cancel());
+
+    bubble.animate(
+        [
+            {
+                opacity: 0,
+                transform: "translate(-50%,-40%) scale(.8)"
+            },
+            {
+                opacity: 1,
+                transform: "translate(-50%,-80%) scale(1.15)"
+            }
+        ],
+        {
+            duration: 150,
+            fill: "forwards"
+        }
+    );
+
+}
+function commitCombo(player) {
+
+    clearTimeout(combo[player].timer);
+    combo[player].timer = null;
+
+    if (combo[player].amount === 0) return;
+
+    state.players[player].journal.push({
+        start: combo[player].startLife,
+        change: combo[player].amount,
+        end: state.players[player].life
+    });
+
+    combo[player].amount = 0;
+    combo[player].startLife = null;
+
+    updateComboBubble(player);
+
+    saveState();
+}
+function renderJournal(player) {
+
+    const panel = document.getElementById(player + "-journal");
+
+    panel.replaceChildren();
+
+    const journal = state.players[player].journal;
+
+    for (const entry of journal) {
+
+        const row = document.createElement("div");
+        row.className = "journal-row";
+
+        row.innerHTML = `
+            <span class="old-life">${entry.start}</span>
+            <span class="change">${entry.change > 0 ? "+" : ""}${entry.change}</span>
+        `;
+
+        panel.appendChild(row);
+
+    }
+
+    const current = document.createElement("div");
+    current.className = "journal-current";
+    current.textContent = state.players[player].life;
+
+    panel.appendChild(current);
+
+}
+function changeLife(player, amount) {
+
+    if (gameOverVisible()) return;
+
+    lastState = JSON.stringify(state);
+
+    if (!state.timer.running) {
+
+        state.timer.running = true;
+        state.timer.startTime = Date.now();
+
+    }
+
+    if (combo[player].startLife === null) {
+
+        combo[player].startLife = state.players[player].life;
+
+    }
+
+    state.players[player].life += amount;
+    combo[player].amount += amount;
+
+    updateComboBubble(player);
+
+    clearTimeout(combo[player].timer);
+
+    combo[player].timer = setTimeout(() => {
+
+        commitCombo(player);
+        render();
+
+    }, 700);
+
+    checkWinner();
+
+    saveState();
+    render();
+
+}
+function checkWinner() {
+
+    if (state.players.top.life <= 0) {
+
+        finishGame("bottom", "top");
+        return;
+
+    }
+
+    if (state.players.bottom.life <= 0) {
+
+        finishGame("top", "bottom");
+        return;
+
+    }
+
+}
+function finishGame(winner, loser) {
+
+    if (gameOverVisible()) return;
+
+    commitCombo("top");
+    commitCombo("bottom");
+
+    state.timer.running = false;
+
+    if (state.timer.startTime !== null) {
+
+        state.timer.elapsed = Math.floor(
+            (Date.now() - state.timer.startTime) / 1000
+        );
+
+    }
+
+    state.players[winner].wins++;
+    state.players[loser].losses++;
+
+    state.games.push({
+
+        winner: state.players[winner].name,
+        loser: state.players[loser].name,
+        duration: state.timer.elapsed,
+        date: new Date().toLocaleDateString()
+
+    });
+
+    winnerText.textContent =
+        `🏆 ${state.players[winner].name} Wins!`;
+
+    finalTime.textContent =
+        `Time: ${formatTime(state.timer.elapsed)}`;
+
+    gameOver.classList.remove("hidden");
+
+    saveState();
+    render();
+
+}
+function nextGame() {
+
+    // Stop any pending combo timers
+    clearTimeout(combo.top.timer);
+    clearTimeout(combo.bottom.timer);
+
+    combo.top.timer = null;
+    combo.bottom.timer = null;
+
+    // Reset combo state
+    combo.top.amount = 0;
+    combo.bottom.amount = 0;
+
+    combo.top.startLife = null;
+    combo.bottom.startLife = null;
+
+    // Hide combo bubbles
+    updateComboBubble("top");
+    updateComboBubble("bottom");
+
+    // Reset life
+    state.players.top.life = state.startingLife;
+    state.players.bottom.life = state.startingLife;
+
+    // Start a completely fresh journal
+    state.players.top.journal = [];
+    state.players.bottom.journal = [];
+
+    // Reset timer
+    state.timer = {
+        running: false,
+        elapsed: 0,
+        startTime: null
+    };
+
+    // Hide game over dialog
+    gameOver.classList.add("hidden");
+
+    // Save and redraw
+    saveState();
+    render();
+
+}
+function undoGame() {
+
+    if (!lastState) return;
+
+    clearTimeout(combo.top.timer);
+    clearTimeout(combo.bottom.timer);
+
+    combo.top.timer = null;
+    combo.bottom.timer = null;
+
+    combo.top.amount = 0;
+    combo.bottom.amount = 0;
+
+    combo.top.startLife = null;
+    combo.bottom.startLife = null;
+
+    state = JSON.parse(lastState);
+
+    gameOver.classList.add("hidden");
+
+    updateComboBubble("top");
+    updateComboBubble("bottom");
+
+    saveState();
+    render();
+
+}
+function render() {
+
+    topLife.textContent = state.players.top.life;
+    bottomLife.textContent = state.players.bottom.life;
+
+    topName.textContent = state.players.top.name;
+    bottomName.textContent = state.players.bottom.name;
+
+    renderJournal("top");
+    renderJournal("bottom");
+
+    updateComboBubble("top");
+    updateComboBubble("bottom");
+
+    updateTimer();
+
+}
+function updateTimer() {
+
+    if (state.timer.running && state.timer.startTime !== null) {
+
+        state.timer.elapsed = Math.floor(
+            (Date.now() - state.timer.startTime) / 1000
+        );
+
+    }
+
+    timer.textContent = "⏱ " + formatTime(state.timer.elapsed);
+
+}
+setInterval(() => {
+
+    if (state.timer.running) {
+
+        updateTimer();
+
+    }
+
+}, 250);
+function formatTime(seconds) {
+
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(secs).padStart(2, "0")
+    );
+
+}
+function gameOverVisible() {
+
+    return !gameOver.classList.contains("hidden");
+
+}
+function saveState() {
+
+    localStorage.setItem(
+        "lifeLedger",
+        JSON.stringify(state)
+    );
+
+}
+function loadState() {
+
+    const saved = localStorage.getItem("lifeLedger");
+
+    if (!saved) {
+        return structuredClone(DEFAULT_STATE);
+    }
+
+    try {
+
+        const loaded = JSON.parse(saved);
+
+        // Make sure every section exists
+        loaded.players ??= structuredClone(DEFAULT_STATE.players);
+
+        loaded.players.top ??= structuredClone(DEFAULT_STATE.players.top);
+        loaded.players.bottom ??= structuredClone(DEFAULT_STATE.players.bottom);
+
+        // Ensure all player properties exist
+        for (const player of ["top", "bottom"]) {
+
+            loaded.players[player].name ??= DEFAULT_STATE.players[player].name;
+            loaded.players[player].life ??= DEFAULT_STATE.players[player].life;
+            loaded.players[player].wins ??= 0;
+            loaded.players[player].losses ??= 0;
+            loaded.players[player].journal ??= [];
+
+        }
+
+        loaded.games ??= [];
+        loaded.startingLife ??= 20;
+
+        loaded.timer ??= {
+            running: false,
+            elapsed: 0,
+            startTime: null
+        };
+
+        return loaded;
+
+    } catch (err) {
+
+        console.warn("Corrupted save detected. Resetting.");
+
+        localStorage.removeItem("lifeLedger");
+
+        return structuredClone(DEFAULT_STATE);
+
+    }
+
+}
+function setupUI() {
+
+    // Navigation
+    document.querySelectorAll("nav button").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            if (!isAnimating) {
+                navigateTo(button.dataset.page);
+            }
+
+        });
+
+    });
+
+    // Settings
+    setupSettingsButtons();
+
+    // Initial render
+    render();
+    updateSeason();
+    updateHistory();
+
+}
+if (document.readyState === "loading") {
+
+    document.addEventListener("DOMContentLoaded", setupUI);
+
+} else {
+
+    setupUI();
+
+}
+function setupSettingsButtons() {
+
+    document.getElementById("life-20").onclick = () => updateSettingsLife(20);
+    document.getElementById("life-30").onclick = () => updateSettingsLife(30);
+    document.getElementById("life-40").onclick = () => updateSettingsLife(40);
+
+    document.getElementById("new-game").onclick = () => {
+
+        if (confirm("Start a new game?")) {
+            nextGame();
+        }
+
+    };
+
+    document.getElementById("reset-season").onclick = () => {
+
+        if (!confirm("Reset season record?")) return;
+
+        state.players.top.wins = 0;
+        state.players.top.losses = 0;
+
+        state.players.bottom.wins = 0;
+        state.players.bottom.losses = 0;
+
+        saveState();
+        updateSeason();
+
+    };
+
+    document.getElementById("clear-history").onclick = () => {
+
+        if (!confirm("Delete all game history?")) return;
+
+        state.games = [];
+
+        saveState();
+        updateHistory();
+
+    };
+
+    document.getElementById("reset-all").onclick = () => {
+
+        if (!confirm("Erase EVERYTHING?")) return;
+
+        localStorage.removeItem("lifeLedger");
+        location.reload();
+
+    };
+
+}
