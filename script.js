@@ -206,34 +206,42 @@ function updateComboBubble(player){
 }
 function commitCombo(player){
 
-    if(combo[player].amount===0) return;
+    clearTimeout(combo[player].timer);
+    combo[player].timer = null;
+
+    if(gameOverVisible()) return;
+
+    if(combo[player].amount === 0) return;
 
     state.players[player].journal.push({
+
         start: combo[player].startLife,
         change: combo[player].amount,
         end: state.players[player].life
+
     });
 
     const bubble = document.getElementById(player + "-combo");
 
+    bubble.getAnimations().forEach(a => a.cancel());
+
     bubble.style.opacity = 0;
+    bubble.style.transform = "translate(-50%,-50%)";
     bubble.textContent = "";
 
     combo[player].amount = 0;
     combo[player].startLife = null;
 
-    bubble.getAnimations().forEach(a => a.cancel());
-
-    bubble.style.transform = "translate(-50%,-50%)";
-
     saveState();
+
 }
 function renderJournal(player){
 
     const panel = document.getElementById(player + "-journal");
-    const entries = state.players[player].journal;
 
     panel.innerHTML = "";
+
+    const entries = state.players[player].journal;
 
     entries.forEach(entry => {
 
@@ -253,7 +261,6 @@ function renderJournal(player){
     const current = document.createElement("div");
 
     current.className = "journal-current";
-
     current.textContent = state.players[player].life;
 
     panel.appendChild(current);
@@ -391,42 +398,51 @@ function finishGame(winner, loser){
 
 function nextGame(){
 
+    clearTimeout(combo.top.timer);
+    clearTimeout(combo.bottom.timer);
+
+    combo.top.timer = null;
+    combo.bottom.timer = null;
+
+    combo.top.amount = 0;
+    combo.bottom.amount = 0;
+
+    combo.top.startLife = null;
+    combo.bottom.startLife = null;
+
     state.players.top.life = state.startingLife;
     state.players.bottom.life = state.startingLife;
-   state.players.top.journal = [];
-state.players.bottom.journal = [];
 
-document.getElementById("top-journal").innerHTML = "";
-document.getElementById("bottom-journal").innerHTML = "";
-   combo.top.amount = 0;
-combo.bottom.amount = 0;
-
-combo.top.startLife = null;
-combo.bottom.startLife = null;
-
-clearTimeout(combo.top.timer);
-clearTimeout(combo.bottom.timer);
-
-document.getElementById("top-combo").textContent = "";
-document.getElementById("bottom-combo").textContent = "";
-
-document.getElementById("top-combo").style.opacity = 0;
-document.getElementById("bottom-combo").style.opacity = 0;
+    state.players.top.journal = [];
+    state.players.bottom.journal = [];
 
     state.timer = {
 
-        running:false,
-
-        elapsed:0,
-
-        startTime:null
+        running: false,
+        elapsed: 0,
+        startTime: null
 
     };
 
+    const topBubble = document.getElementById("top-combo");
+    const bottomBubble = document.getElementById("bottom-combo");
+
+    topBubble.getAnimations().forEach(a => a.cancel());
+    bottomBubble.getAnimations().forEach(a => a.cancel());
+
+    topBubble.textContent = "";
+    bottomBubble.textContent = "";
+
+    topBubble.style.opacity = 0;
+    bottomBubble.style.opacity = 0;
+
+    topBubble.style.transform = "translate(-50%,-50%)";
+    bottomBubble.style.transform = "translate(-50%,-50%)";
+
+    document.getElementById("top-journal").innerHTML = "";
+    document.getElementById("bottom-journal").innerHTML = "";
 
     gameOver.classList.add("hidden");
-   state.players.top.journal = [];
-   state.players.bottom.journal = [];
 
     saveState();
 
