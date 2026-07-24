@@ -649,50 +649,52 @@ function setupUI() {
 }
 
 function setupSettingsButtons() {
-    const life20 = document.getElementById("life-20");
-    const life30 = document.getElementById("life-30");
-    const life40 = document.getElementById("life-40");
-    const resetSeason = document.getElementById("reset-season");
-    const clearHistory = document.getElementById("clear-history");
-    const resetAll = document.getElementById("reset-all");
-    
-    if (life20) life20.onclick = () => updateSettingsLife(20);
-    if (life30) life30.onclick = () => updateSettingsLife(30);
-    if (life40) life40.onclick = () => updateSettingsLife(40);
-    
-    if (resetSeason) {
-        resetSeason.onclick = () => {
-            if(confirm("Reset wins and losses?")){
-                state.players.top.wins = 0;
-                state.players.top.losses = 0;
-                state.players.bottom.wins = 0;
-                state.players.bottom.losses = 0;
-                saveState();
-                updateSeason();
-                alert("Season reset");
-            }
-        };
-    }
-    
-    if (clearHistory) {
-        clearHistory.onclick = () => {
-            if(confirm("Delete all game history?")){
-                state.games = [];
-                saveState();
-                updateHistory();
-                alert("History cleared");
-            }
-        };
-    }
-    
-    if (resetAll) {
-        resetAll.onclick = () => {
-            if(confirm("Erase everything?")){
-                localStorage.removeItem("lifeLedger");
-                location.reload();
-            }
-        };
-    }
+
+    document.getElementById("life-20")?.addEventListener("click", () => updateSettingsLife(20));
+    document.getElementById("life-30")?.addEventListener("click", () => updateSettingsLife(30));
+    document.getElementById("life-40")?.addEventListener("click", () => updateSettingsLife(40));
+
+    document.getElementById("new-game")?.addEventListener("click", () => {
+
+        if (confirm("Start a new game?")) {
+            nextGame();
+        }
+
+    });
+
+    document.getElementById("reset-season")?.addEventListener("click", () => {
+
+        if (!confirm("Reset season?")) return;
+
+        state.players.top.wins = 0;
+        state.players.top.losses = 0;
+        state.players.bottom.wins = 0;
+        state.players.bottom.losses = 0;
+
+        saveState();
+        updateSeason();
+
+    });
+
+    document.getElementById("clear-history")?.addEventListener("click", () => {
+
+        if (!confirm("Clear history?")) return;
+
+        state.games = [];
+        saveState();
+        updateHistory();
+
+    });
+
+    document.getElementById("reset-all")?.addEventListener("click", () => {
+
+        if (!confirm("Erase everything?")) return;
+
+        localStorage.removeItem("lifeLedger");
+        location.reload();
+
+    });
+
 }
 
 // Call setup when DOM is ready
