@@ -43,18 +43,18 @@ body {
 }
 
 
-.top {
+player.top {
     transform: rotate(180deg);
     background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(34, 139, 34, 0.05) 100%);
     border-bottom: 3px solid #8B4513;
 }
 
-.top .life {
+.player.top .life {
     color: #FF6B35;
     text-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
 }
 
-.top .player-name {
+.player.top .player-name {
     color: #2a8a2a;
     text-shadow: 0 0 10px rgba(42, 138, 42, 0.3);
 }
@@ -65,12 +65,12 @@ body {
     border-top: 3px solid #191970;
 }
 
-.bottom .life {
+player.bottom .life {
     color: #00d4ff;
     text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
-.bottom .player-name {
+.player.bottom .player-name {
     color: #1e90ff;
     text-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
 }
