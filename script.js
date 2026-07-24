@@ -206,7 +206,7 @@ function updateComboBubble(player){
 }
 function commitCombo(player){
 
-    if(yer].amount===0)
+   if(combo[player].amount===0)
         return;
 
     const endLife=state.players[player].life;
