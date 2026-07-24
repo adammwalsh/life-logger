@@ -393,6 +393,11 @@ function nextGame(){
 
     state.players.top.life = state.startingLife;
     state.players.bottom.life = state.startingLife;
+   state.players.top.journal = [];
+state.players.bottom.journal = [];
+
+document.getElementById("top-journal").innerHTML = "";
+document.getElementById("bottom-journal").innerHTML = "";
    combo.top.amount = 0;
 combo.bottom.amount = 0;
 
@@ -528,9 +533,14 @@ function gameOverVisible(){
 
 function saveState(){
 
+    const save = structuredClone(state);
+
+    save.players.top.journal = [];
+    save.players.bottom.journal = [];
+
     localStorage.setItem(
         "lifeLedger",
-        JSON.stringify(state)
+        JSON.stringify(save)
     );
 
 }
