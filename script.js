@@ -171,39 +171,39 @@ bottomPlayer.addEventListener("click",e=>{
 
 function updateComboBubble(player){
 
-    const bubble=document.getElementById(player+"-combo");
+    const bubble = document.getElementById(player + "-combo");
 
-    const value=yer].amount;
+    const value = combo[player].amount;
 
-    if(value===0){
+    if(value === 0){
 
-        bubble.style.opacity=0;
-        bubble.style.transform="translate(-50%,-50%)";
+        bubble.style.opacity = 0;
+        bubble.style.transform = "translate(-50%,-20%)";
 
         return;
 
     }
 
-    bubble.textContent=(value>0?"+":"")+value;
+    bubble.textContent = (value > 0 ? "+" : "") + value;
 
-    bubble.style.opacity=1;
+    bubble.style.opacity = 1;
+    bubble.style.transform = "translate(-50%,-80%)";
 
     bubble.animate([
         {
-            transform:"translate(-50%,-40%) scale(.9)",
-            opacity:.3
+            transform: "translate(-50%,-40%) scale(.9)",
+            opacity: .3
         },
         {
-            transform:"translate(-50%,-80%) scale(1.15)",
-            opacity:1
+            transform: "translate(-50%,-80%) scale(1.15)",
+            opacity: 1
         }
     ],{
-        duration:120,
-        fill:"forwards"
+        duration: 120,
+        fill: "forwards"
     });
 
 }
-
 function commitCombo(player){
 
     if(yer].amount===0)
