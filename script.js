@@ -233,31 +233,33 @@ function commitCombo(player){
 
 function renderJournal(player){
 
-    panel.innerHTML="";
+    const panel = document.getElementById(player + "-journal");
+    const entries = state.players[player].journal;
 
-entries.forEach(entry=>{
+    panel.innerHTML = "";
 
-    const row=document.createElement("div");
+    entries.forEach(entry => {
 
-    row.className="journal-row";
+        const row = document.createElement("div");
 
-    row.innerHTML=`
-        <span class="old-life">${entry.start}</span>
-        <span class="change">${entry.change>0?"+":""}${entry.change}</span>
-    `;
+        row.className = "journal-row";
 
-    panel.appendChild(row);
+        row.innerHTML = `
+            <span class="old-life">${entry.start}</span>
+            <span class="change">${entry.change > 0 ? "+" : ""}${entry.change}</span>
+        `;
 
-});
+        panel.appendChild(row);
 
-const current=document.createElement("div");
-
-current.className="journal-current";
-
-current.textContent=state.players[player].life;
-
-panel.appendChild(current);
     });
+
+    const current = document.createElement("div");
+
+    current.className = "journal-current";
+
+    current.textContent = state.players[player].life;
+
+    panel.appendChild(current);
 
 }
 /* ============================================================
