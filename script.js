@@ -624,11 +624,13 @@ let isAnimating = false;
 
 // Wait for DOM to be ready, then set up nav and settings
 function setupUI() {
-    const navButtons = document.querySelectorAll("nav button");
+    alert("2");
+   const navButtons = document.querySelectorAll("nav button");
     
     if (navButtons.length === 0) {
         console.error("Navigation buttons not found!");
         return;
+       alert("3");
     }
     
     // Setup navigation
@@ -1218,6 +1220,7 @@ function undoGame() {
 }
 function render() {
 
+   alert("4");
     topLife.textContent = state.players.top.life;
     bottomLife.textContent = state.players.bottom.life;
 
