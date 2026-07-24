@@ -1561,3 +1561,33 @@ function updateSettingsLife(amount) {
     alert(`Starting life set to ${amount}.`);
 
 }
+// Register Service Worker
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", async () => {
+
+        try {
+
+            const registration = await navigator.serviceWorker.register(
+                "./service-worker.js",
+                { updateViaCache: "none" }
+            );
+
+            registration.update();
+
+            setInterval(() => {
+                registration.update();
+            }, 60000);
+
+            console.log("Service Worker Registered");
+
+        } catch (err) {
+
+            console.error(err);
+
+        }
+
+    });
+
+}
