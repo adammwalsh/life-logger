@@ -178,18 +178,31 @@ function updateComboBubble(player){
     if(value===0){
 
         bubble.style.opacity=0;
+        bubble.style.transform="translate(-50%,-50%)";
 
         return;
 
     }
 
+    bubble.textContent=(value>0?"+":"")+value;
+
     bubble.style.opacity=1;
 
-    bubble.textContent=
-        (value>0?"+":"")+value;
+    bubble.animate([
+        {
+            transform:"translate(-50%,-40%) scale(.9)",
+            opacity:.3
+        },
+        {
+            transform:"translate(-50%,-80%) scale(1.15)",
+            opacity:1
+        }
+    ],{
+        duration:120,
+        fill:"forwards"
+    });
 
 }
-
 
 function commitCombo(player){
 
