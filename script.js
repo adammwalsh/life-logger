@@ -206,39 +206,28 @@ function updateComboBubble(player){
 }
 function commitCombo(player){
 
-   if(combo[player].amount===0)
-        return;
-
-    const endLife=state.players[player].life;
+    if(combo[player].amount===0) return;
 
     state.players[player].journal.push({
-
-        start:combo[player].startLife,
-
-        change:combo[player].amount,
-
-        end:endLife
-
+        start: combo[player].startLife,
+        change: combo[player].amount,
+        end: state.players[player].life
     });
 
     const bubble = document.getElementById(player + "-combo");
 
-bubble.style.opacity = 0;
+    bubble.style.opacity = 0;
+    bubble.textContent = "";
 
-combo[player].amount = 0;
+    combo[player].amount = 0;
+    combo[player].startLife = null;
 
-combo[player].startLife = null;
+    bubble.getAnimations().forEach(a => a.cancel());
 
-setTimeout(() => {
-
-    updateComboBubble(player);
-
-},200);
+    bubble.style.transform = "translate(-50%,-50%)";
 
     saveState();
-
 }
-
 function renderJournal(player){
 
     const panel = document.getElementById(player + "-journal");
@@ -404,7 +393,20 @@ function nextGame(){
 
     state.players.top.life = state.startingLife;
     state.players.bottom.life = state.startingLife;
+   combo.top.amount = 0;
+combo.bottom.amount = 0;
 
+combo.top.startLife = null;
+combo.bottom.startLife = null;
+
+clearTimeout(combo.top.timer);
+clearTimeout(combo.bottom.timer);
+
+document.getElementById("top-combo").textContent = "";
+document.getElementById("bottom-combo").textContent = "";
+
+document.getElementById("top-combo").style.opacity = 0;
+document.getElementById("bottom-combo").style.opacity = 0;
 
     state.timer = {
 
@@ -439,7 +441,20 @@ function undoGame(){
 
 
     gameOver.classList.add("hidden");
+combo.top.amount = 0;
+combo.bottom.amount = 0;
 
+combo.top.startLife = null;
+combo.bottom.startLife = null;
+
+clearTimeout(combo.top.timer);
+clearTimeout(combo.bottom.timer);
+
+document.getElementById("top-combo").textContent = "";
+document.getElementById("bottom-combo").textContent = "";
+
+document.getElementById("top-combo").style.opacity = 0;
+document.getElementById("bottom-combo").style.opacity = 0;
     saveState();
 
     render();
