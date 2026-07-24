@@ -1,16 +1,24 @@
+/* ============================================================
+   LIFE LEDGER V2
+   PART 1
+   Core State / Input / Combo Engine
+============================================================ */
+
 const DEFAULT_STATE = {
     players: {
         top: {
             name: "Sydney",
             life: 20,
             wins: 0,
-            losses: 0
+            losses: 0,
+            journal: []
         },
         bottom: {
             name: "Adam",
             life: 20,
             wins: 0,
-            losses: 0
+            losses: 0,
+            journal: []
         }
     },
 
@@ -21,16 +29,19 @@ const DEFAULT_STATE = {
     },
 
     games: [],
-    lifeHistory: [],
     startingLife: 20
 };
-
 
 let state = loadState();
 let lastState = null;
 
 
-// Elements
+/* ============================================================
+   Elements
+============================================================ */
+
+const topPlayer = document.getElementById("sydney");
+const bottomPlayer = document.getElementById("adam");
 
 const topLife = document.getElementById("sydney-life");
 const bottomLife = document.getElementById("adam-life");
@@ -45,76 +56,240 @@ const winnerText = document.getElementById("winner-text");
 const finalTime = document.getElementById("final-time");
 
 
-// Buttons
+/* ============================================================
+   Floating Combo State
+============================================================ */
 
-document.getElementById("sydney-plus")
-.onclick = () => changeLife("top",1);
+const combo = {
 
-document.getElementById("sydney-minus")
-.onclick = () => changeLife("top",-1);
+    top:{
+        amount:0,
+        startLife:null,
+        timer:null
+    },
 
-document.getElementById("adam-plus")
-.onclick = () => changeLife("bottom",1);
+    bottom:{
+        amount:0,
+        startLife:null,
+        timer:null
+    }
 
-document.getElementById("adam-minus")
-.onclick = () => changeLife("bottom",-1);
-
-
-document.getElementById("undo-button")
-.onclick = undoGame;
-
-
-document.getElementById("next-game-button")
-.onclick = nextGame;
+};
 
 
-render();
+/* ============================================================
+   Create Floating Combo Indicators
+============================================================ */
 
-setInterval(updateTimer, 1000);
+function createComboBubble(player){
+
+    const bubble=document.createElement("div");
+
+    bubble.className="combo-bubble";
+
+    bubble.id=player+"-combo";
+
+    bubble.style.opacity=0;
+
+    document
+        .getElementById(player==="top"?"sydney":"adam")
+        .appendChild(bubble);
+
+}
+
+createComboBubble("top");
+createComboBubble("bottom");
+
+function createJournal(player){
+
+    const journal=document.createElement("div");
+
+    journal.className="life-journal";
+
+    journal.id=player+"-journal";
+
+    document
+        .getElementById(player==="top"?"sydney":"adam")
+        .appendChild(journal);
+
+}
+
+createJournal("top");
+createJournal("bottom");
 
 
+/* ============================================================
+   Tap Controls
+============================================================ */
 
-function changeLife(player, amount){
+topPlayer.addEventListener("click",e=>{
 
     if(gameOverVisible()) return;
 
+    const rect=topPlayer.getBoundingClientRect();
 
-    lastState = JSON.stringify(state);
+    const y=e.clientY-rect.top;
 
+    /* top player is rotated */
 
-    if(!state.timer.running){
+    if(y<rect.height/2){
 
-        state.timer.running = true;
-        state.timer.startTime = Date.now();
+        changeLife("top",-1);
+
+    }else{
+
+        changeLife("top",1);
 
     }
 
+});
 
-    const previousLife = state.players[player].life;
+bottomPlayer.addEventListener("click",e=>{
 
-state.players[player].life += amount;
+    if(gameOverVisible()) return;
 
+    const rect=bottomPlayer.getBoundingClientRect();
 
-state.lifeHistory.push({
+    const y=e.clientY-rect.top;
 
-    player: player,
+    if(y<rect.height/2){
 
-    name: state.players[player].name,
+        changeLife("bottom",1);
 
-    change: amount,
+    }else{
 
-    before: previousLife,
+        changeLife("bottom",-1);
 
-    after: state.players[player].life,
-
-    time: new Date().toLocaleTimeString()
+    }
 
 });
 
 
+/* ============================================================
+   Combo Bubble
+============================================================ */
+
+function updateComboBubble(player){
+
+    const bubble=document.getElementById(player+"-combo");
+
+    const value=combo[player].amount;
+
+    if(value===0){
+
+        bubble.style.opacity=0;
+
+        return;
+
+    }
+
+    bubble.style.opacity=1;
+
+    bubble.textContent=
+        (value>0?"+":"")+value;
+
+}
+
+
+function commitCombo(player){
+
+    if(combo[player].amount===0)
+        return;
+
+    const endLife=state.players[player].life;
+
+    state.players[player].journal.push({
+
+        start:combo[player].startLife,
+
+        change:combo[player].amount,
+
+        end:endLife
+
+    });
+
+    combo[player].amount=0;
+
+    combo[player].startLife=null;
+
+    updateComboBubble(player);
+
+    saveState();
+
+}
+
+function renderJournal(player){
+
+    panel.innerHTML="";
+
+entries.forEach(entry=>{
+
+    const row=document.createElement("div");
+
+    row.className="journal-row";
+
+    row.innerHTML=`
+        <span class="old-life">${entry.start}</span>
+        <span class="change">${entry.change>0?"+":""}${entry.change}</span>
+    `;
+
+    panel.appendChild(row);
+
+});
+
+const current=document.createElement("div");
+
+current.className="journal-current";
+
+current.textContent=state.players[player].life;
+
+panel.appendChild(current);
+    });
+
+}
+/* ============================================================
+   Life Change
+============================================================ */
+
+function changeLife(player,amount){
+
+    lastState=JSON.stringify(state);
+
+    if(!state.timer.running){
+
+        state.timer.running=true;
+
+        state.timer.startTime=Date.now();
+
+    }
+
+    if(combo[player].startLife===null){
+
+        combo[player].startLife=
+            state.players[player].life;
+
+    }
+
+    state.players[player].life+=amount;
+
+    combo[player].amount+=amount;
+
+    updateComboBubble(player);
+
+    clearTimeout(combo[player].timer);
+
+    combo[player].timer=setTimeout(()=>{
+
+        commitCombo(player);
+
+        render();
+
+    },700);
+
     checkWinner();
 
     saveState();
+
     render();
 
 }
@@ -251,19 +426,14 @@ function undoGame(){
 
 function render(){
 
-    topLife.textContent =
-    state.players.top.life;
+    topLife.textContent = state.players.top.life;
+    bottomLife.textContent = state.players.bottom.life;
 
-    bottomLife.textContent =
-    state.players.bottom.life;
+    topName.textContent = state.players.top.name;
+    bottomName.textContent = state.players.bottom.name;
 
-
-    topName.textContent =
-    state.players.top.name;
-
-    bottomName.textContent =
-    state.players.bottom.name;
-
+    renderJournal("top");
+    renderJournal("bottom");
 
     updateTimer();
 
